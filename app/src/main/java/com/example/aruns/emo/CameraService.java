@@ -84,7 +84,7 @@ public class CameraService extends Service {
                     cam.startPreview();
                     cam.takePicture(null,null,mPictureCallback);
                 }catch (Exception e){
-                    Log.e("CameraService", "Error with camera");
+                    Log.e("CameraService", "Error with camera"+e.getLocalizedMessage());
                 }
             }
         };
