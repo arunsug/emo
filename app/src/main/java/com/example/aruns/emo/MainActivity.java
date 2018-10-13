@@ -24,14 +24,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(this.getLocalClassName(),"Service Created");
         handlePermissions();
         startService(new Intent(this, CameraService.class));
-        Vision.Builder visionBuilder = new Vision.Builder(
-                new NetHttpTransport(),
-                new AndroidJsonFactory(),
-                null);
-
-        visionBuilder.setVisionRequestInitializer(
-                new VisionRequestInitializer("AIzaSyCH1UWvzGtELIMHdC3WW_gOD0D9xeb9wms"));
-        Vision vision = visionBuilder.build();
 
     }
 
