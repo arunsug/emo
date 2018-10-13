@@ -1,13 +1,20 @@
 package com.example.aruns.emo;
 
+import android.app.ActivityManager;
 import android.app.Service;
+import android.app.usage.UsageEvents;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.*;
+import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.*;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Size;
 import android.view.SurfaceView;
@@ -19,7 +26,11 @@ import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionRequestInitializer;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class CameraService extends Service {
 
@@ -34,7 +45,8 @@ public class CameraService extends Service {
 
     @Override
     public void onCreate() {
-
+        //Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+        //startActivity(intent);
         Toast.makeText(this, "Service created!", Toast.LENGTH_LONG).show();
 
         Vision.Builder visionBuilder = new Vision.Builder(
@@ -46,12 +58,12 @@ public class CameraService extends Service {
                 new VisionRequestInitializer("AIzaSyCH1UWvzGtELIMHdC3WW_gOD0D9xeb9wms"));
         final Vision vision = visionBuilder.build();
 
-
         handler = new Handler();
         runnable = new Runnable() {
             public void run() {
                 Toast.makeText(context, "Service is still running", Toast.LENGTH_LONG).show();
-                handler.postDelayed(runnable, 100000);
+                Log.e("CameraService", getTopAppName(context));
+                handler.postDelayed(runnable, 5000);
 
                 Camera.PictureCallback mPictureCallback = new Camera.PictureCallback() {
                     public void onPictureTaken(byte[] imageData, Camera c) {
@@ -99,7 +111,7 @@ public class CameraService extends Service {
         cameraCount = Camera.getNumberOfCameras();
         for (int camIdx = 0; camIdx < cameraCount; camIdx++) {
             Camera.getCameraInfo(camIdx, cameraInfo);
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 try {
                     cam = Camera.open(camIdx);
                 } catch (RuntimeException e) {
@@ -110,6 +122,59 @@ public class CameraService extends Service {
         }
 
         return cam;
+    }
+
+    public static String getTopAppName(Context context) {
+        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        String strName = "";
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                strName = getLollipopFGAppPackageName(context);
+            } else {
+                strName = mActivityManager.getRunningTasks(1).get(0).topActivity.getClassName();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        PackageManager packageManager= context.getPackageManager();
+        String appName = null;
+        try {
+            appName = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(strName, PackageManager.GET_META_DATA));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return appName;
+    }
+
+
+    private static String getLollipopFGAppPackageName(Context ctx) {
+
+        try {
+            UsageStatsManager usageStatsManager = (UsageStatsManager) ctx.getSystemService(USAGE_STATS_SERVICE);
+            long milliSecs = 60 * 1000;
+            Date date = new Date();
+            List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, date.getTime() - milliSecs, date.getTime());
+            if (queryUsageStats.size() > 0) {
+                Log.i("LPU", "queryUsageStats size: " + queryUsageStats.size());
+            }
+            long recentTime = 0;
+            String recentPkg = "";
+            for (int i = 0; i < queryUsageStats.size(); i++) {
+                UsageStats stats = queryUsageStats.get(i);
+                if (i == 0 && !"org.pervacio.pvadiag".equals(stats.getPackageName())) {
+                    Log.i("LPU", "PackageName: " + stats.getPackageName() + " " + stats.getLastTimeStamp());
+                }
+                if (stats.getLastTimeStamp() > recentTime) {
+                    recentTime = stats.getLastTimeStamp();
+                    recentPkg = stats.getPackageName();
+                }
+            }
+            return recentPkg;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     @Override
