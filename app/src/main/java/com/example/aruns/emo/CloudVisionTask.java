@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.model.AnnotateImageRequest;
+import com.google.api.services.vision.v1.model.AnnotateImageResponse;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import com.google.api.services.vision.v1.model.FaceAnnotation;
@@ -39,12 +40,11 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
 
             BatchAnnotateImagesResponse batchResponse =
                     vision.images().annotate(batchRequest).execute();
-            Log.v("CloudVisionTask", "Here");
 
-            //List<FaceAnnotation> faces = batchResponse.getResponses()
-            //        .get(0).getFaceAnnotations();
+            AnnotateImageResponse response = batchResponse.getResponses()
+                    .get(0);
 
-            Log.v("CloudVisionTask", "Received: "+batchResponse.getResponses().size());
+            Log.v("CloudVisionTask",response.toPrettyString());
         }catch (Exception e){
             Log.e("CloudVisionTask", e.getLocalizedMessage());
         }
