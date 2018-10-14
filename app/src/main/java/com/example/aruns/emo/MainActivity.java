@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showAppData(View view){
-        //Intent AppData = new Intent(this, appgraphs.class);
-        //AppData.putExtra("APP_NAME", ((GraphView)view).getTitle() );
-        //startActivity(AppData);
+        Intent AppData = new Intent(this, appgraphs.class);
+        AppData.putExtra("APP_NAME", ((GraphView)view).getTitle() );
+        startActivity(AppData);
     }
 
     protected void onResume()

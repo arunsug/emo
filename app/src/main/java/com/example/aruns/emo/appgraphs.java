@@ -26,6 +26,8 @@ public class appgraphs extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_appgraphs);
+        lin = findViewById(R.id.appgraphslin);
         params = new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,400);
         params.leftMargin = 1;
         params.leftMargin = 1;
@@ -66,7 +68,7 @@ public class appgraphs extends Activity {
 
         for ( int i =0; i<5; i++) {
 
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>((DataPoint[]) allPoints.get(Emotion.values[i]).toArray());
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(allPoints.get(Emotion.values[i]).toArray(new DataPoint[0]));
             graphs[i].addSeries(series);
 
         }
