@@ -50,7 +50,7 @@ public class GraphAdapter extends RecyclerView.Adapter {
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
                     // show normal x value
-                    if (value < 6)
+                    if (value < 5)
                         return Information.getEnumString(Emotion.values[(int)value]);
                     else
                         return ((int)value)+"";
@@ -88,10 +88,6 @@ public class GraphAdapter extends RecyclerView.Adapter {
         for (int i = 0; i < 5; i++) {
             points[i] = new DataPoint(i+1, sums[i]);
         }
-
-        ((GraphHolder) h).graphView.getViewport().setXAxisBoundsManual(true);
-        ((GraphHolder) h).graphView.getViewport().setMinX(0);
-        ((GraphHolder) h).graphView.getViewport().setMaxX(6);
 
 
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
