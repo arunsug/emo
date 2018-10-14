@@ -98,9 +98,8 @@ public class GraphAdapter extends RecyclerView.Adapter {
         series.setValueDependentColor(colorer);
         series.setSpacing(5);
         series.setDataWidth(1);
+        ((GraphHolder) h).graphView.removeAllSeries();
         ((GraphHolder) h).graphView.addSeries(series);
-        ((GraphHolder) h).graphView.onDataChanged(true, true);
-
     }
 
     @Override
