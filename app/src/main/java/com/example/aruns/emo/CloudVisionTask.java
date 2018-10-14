@@ -50,6 +50,8 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
                     new BatchAnnotateImagesRequest();
             batchRequest.setRequests(Arrays.asList(request));
 
+            Log.v("CloudVisionTask", "Starting repsonses");
+
             BatchAnnotateImagesResponse batchResponse =
                     vision.images().annotate(batchRequest).execute();
 
@@ -66,6 +68,7 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
                 Information.information.data.put(appName, new ArrayList<Pair>());
 
             Information.information.data.get(appName).add(new Pair(time, answer));
+            Information.information.createInfoFromMemory(context);
 
 
             Log.v("CloudVisionTask", "Hashmap: " + Arrays.toString(Information.information.data.entrySet().toArray()));
