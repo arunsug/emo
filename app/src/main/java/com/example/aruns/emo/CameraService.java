@@ -66,7 +66,9 @@ public class CameraService extends Service {
 
                         }else{
                             Log.v("CameraService", "Data not null " + imageData.length);
-                            runCloudVisionTask(imageData, getTopAppName(context), System.currentTimeMillis(),  vision);
+                            String appName = getTopAppName(context);
+                            if (appName != null || appName.length() > 0)
+                                runCloudVisionTask(imageData, getTopAppName(context), System.currentTimeMillis(),  vision);
                         }
                         c.release();
                     }
@@ -140,6 +142,7 @@ public class CameraService extends Service {
             appName = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(strName, PackageManager.GET_META_DATA));
         } catch (PackageManager.NameNotFoundException e)
         {
+            Log.e("CameraService", "Package Manager Err: "+ e.getMessage());
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.getApplicationContext().startActivity(intent);

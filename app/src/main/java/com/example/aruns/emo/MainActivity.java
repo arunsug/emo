@@ -42,12 +42,6 @@ Okay ISSUES
 IMPORTANT
 we need to test on another phone for demoing
 
-
-*app is crashing when information.information is null
-*which happens when u switch apps for some reason?
-*maybe we are writing in the wrong place?
-
-
 ????dealing with tht usage page that keeps appearing
 
 title of first graph is not visible
