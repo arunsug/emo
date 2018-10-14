@@ -89,10 +89,12 @@ public class GraphAdapter extends RecyclerView.Adapter {
             points[i] = new DataPoint(i, sums[i]);
         }
 
-
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
 
         ((GraphHolder) h).graphView.getGridLabelRenderer().setLabelFormatter(formatter);
+
+        ((GraphHolder) h).graphView.setTitle((new ArrayList<>(Information.information.data.keySet())).get(position) );
+
         series.setValueDependentColor(colorer);
         series.setSpacing(5);
         series.setDataWidth(1);
