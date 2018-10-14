@@ -55,43 +55,18 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
 
             AnnotateImageResponse response = batchResponse.getResponses()
                     .get(0);
-            String angerLikelihood = ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getAngerLikelihood();
-            String joyLikelihood = ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getJoyLikelihood();
-            String sorrowLikelihood = ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getSorrowLikelihood();
-            String surpriseLikelihood = ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getSorrowLikelihood();
-            String[] likelihoodsa = {angerLikelihood, joyLikelihood, sorrowLikelihood, surpriseLikelihood};
-            List<String> likelihoods =  Arrays.asList(likelihoodsa);
-
-
-            int occurrences = Collections.frequency(likelihoods, "VERY_LIKELY")+
-                              Collections.frequency(likelihoods, "LIKELY")+
-                              Collections.frequency(likelihoods, "POSSIBLE");
+            int anger = Information.strToIntVal( ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getAngerLikelihood());
+            int joy = Information.strToIntVal( ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getJoyLikelihood());
+            int sorrow = Information.strToIntVal( ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getSorrowLikelihood());
+            int surprise = Information.strToIntVal( ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getSorrowLikelihood());
+            int[] likelihoods = {anger, joy, sorrow, surprise};
+            Emotion answer = Information.getIntAnswer(likelihoods);
 
             if (!Information.information.data.containsKey(appName))
                 Information.information.data.put(appName, new ArrayList<Pair>());
 
-            if (occurrences == 0 || occurrences > 1)
-                Information.information.data.get(appName).add(new Pair(time, Emotion.NEUTRAL));
-            else
-                for (int i = 0; i < likelihoods.size(); i++){
-                    if (likelihoods.get(i).equals("VERY_LIKELY") || likelihoods.get(i).equals("LIKELY") || likelihoods.get(i).equals("POSSIBLE"))
-                    {
-                        switch (i){
-                            case 1:
-                                Information.information.data.get(appName).add(new Pair(time, Emotion.ANGER));
-                                Information.information.createInfoFromMemory(this.context);
-                            case 2:
-                                Information.information.data.get(appName).add(new Pair(time, Emotion.JOY));
-                                Information.information.createInfoFromMemory(this.context);
-                            case 3:
-                                Information.information.data.get(appName).add(new Pair(time, Emotion.SORROW));
-                                Information.information.createInfoFromMemory(this.context);
-                            case 4:
-                                Information.information.data.get(appName).add(new Pair(time, Emotion.SURPRISE));
-                                Information.information.createInfoFromMemory(this.context);
-                        }
-                    }
-                }
+            Information.information.data.get(appName).add(new Pair(time, answer));
+
 
             Log.v("CloudVisionTask", "Hashmap: " + Arrays.toString(Information.information.data.entrySet().toArray()));
         }catch (Exception e){

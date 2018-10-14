@@ -15,6 +15,47 @@ public class Information implements Serializable {
     public static Information information;
     public static HashMap<String, ArrayList<Pair>> data = new HashMap<>();
 
+    public static final int VERY_LIKELY = 5;
+    public static final int LIKELY = 4;
+    public static final int POSSIBLE = 3;
+    public static final int UNLIKELY = 2;
+    public static final int VERY_UNLIKELY = 1;
+
+    public static final int UNKNOWN = 0;
+
+    public static Emotion getIntAnswer(int[] arr) {
+        //int angerS, int joyS, int sorrowS, int surpriseS
+        int max = -1;
+        int count = 0;
+        int index = 0;
+        for(int i = 0; i < 4; i++) {
+            if(arr[i] > max) {
+                max = arr[i];
+                count = 1;
+                index = i;
+            }
+            else if(arr[i] == max) count++;
+        }
+        if(count == 1) {
+            if(index == 0) return Emotion.ANGER;
+            if(index == 1) return Emotion.JOY;
+            if(index == 2) return Emotion.SORROW;
+            else return Emotion.SURPRISE;
+        }
+        else {
+            return Emotion.NEUTRAL;
+        }
+    }
+
+    public static int strToIntVal(String str) {
+        if(str.equals("VERY_LIKELY")) return 5;
+        if(str.equals("LIKELY")) return 4;
+        if(str.equals("POSSIBLE")) return 3;
+        if(str.equals("UNLIKELY")) return 2;
+        if(str.equals("VERY_UNLIKELY")) return 1;
+        else return 0;
+    }
+
     private static final String DATA_FILE = "emo_data";
 
     public Information() {
