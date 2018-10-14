@@ -80,9 +80,6 @@ public class Information implements Serializable {
         else return 0;
     }
 
-
-
-
     public void createInfoFromMemory(Context context) {
         try {
             File file = context.getFileStreamPath(Information.DATA_FILE);
