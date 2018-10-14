@@ -5,7 +5,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/emo_logo"
+        android:roundIcon="@drawable/roundicon"
+        android:icon="@drawable/squareicon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
