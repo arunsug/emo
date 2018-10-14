@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public DefaultLabelFormatter formatter;
     ValueDependentColor<DataPoint> colorer;
     LinearLayout lin;
+    private HashMap<String, GraphView> graphs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        graphs = new HashMap<>();
         graph();
 
     }
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Set<String> keys = CloudVisionTask.data.keySet();
-
+        GraphView graph;
         for(String key : keys) {
 
             ArrayList<CloudVisionTask.Pair> cur = CloudVisionTask.data.get(key);
@@ -105,7 +107,16 @@ public class MainActivity extends AppCompatActivity {
                 points[i] = new DataPoint(i+1, sums[i]);
             }
 
-            GraphView graph = new GraphView(this);
+            boolean newGraph;
+            if (graphs.containsKey(key)) {
+                graph = graphs.get(key);
+                newGraph = false;
+            } else {
+                graph = new GraphView(this);
+                graphs.put(key, graph);
+                newGraph = true;
+            }
+
             BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
 
             graph.getGridLabelRenderer().setLabelFormatter(formatter);
@@ -115,8 +126,9 @@ public class MainActivity extends AppCompatActivity {
             graph.addSeries(series);
 
             //final View rowView = inflater.inflate(R.layout.activity_main, null);
-
-            lin.addView((View)graph, params);
+            if (newGraph) {
+                lin.addView((View) graph, params);
+            }
 
         }
     }
