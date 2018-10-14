@@ -86,7 +86,7 @@ public class GraphAdapter extends RecyclerView.Adapter {
 
         DataPoint[] points = new DataPoint[5];
         for (int i = 0; i < 5; i++) {
-            points[i] = new DataPoint(i+1, sums[i]);
+            points[i] = new DataPoint(i, sums[i]);
         }
 
 
