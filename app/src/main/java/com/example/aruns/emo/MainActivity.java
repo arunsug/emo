@@ -84,20 +84,6 @@ public class MainActivity extends AppCompatActivity {
         params.topMargin = 1;
         params.bottomMargin = 4;
 
-        GraphView graph = new GraphView(this);
-
-        DataPoint[] points = {new DataPoint(1, 1), new DataPoint(2, 2), new DataPoint(3, 3),
-                 new DataPoint(4, 4), new DataPoint(5, 5)};
-
-        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
-
-        graph.getGridLabelRenderer().setLabelFormatter(formatter);
-        series.setValueDependentColor(colorer);
-        series.setSpacing(5);
-        series.setDataWidth(1);
-        graph.addSeries(series);
-        lin.addView(graph, params);
-
         graphs = new HashMap<>();
         graph();
     }
@@ -155,8 +141,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
-
 
     public void handlePermissions(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
