@@ -14,12 +14,13 @@ import com.google.api.services.vision.v1.model.Image;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
 
-    public static HashMap<String, ArrayList<EmotionDataPoint>> map = new HashMap<>();
+    public static final HashMap<String, ArrayList<Pair>> data = new HashMap<>();
 
     public Vision vision;
     public byte[] imageData;
@@ -52,34 +53,95 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
 
             AnnotateImageResponse response = batchResponse.getResponses()
                     .get(0);
-            String angerLikelihood = (String) ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).get("angerLikelihood");
-            String joyLikelihood = (String) ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).get("joyLikelihood");
-            String sorrowLikelihood = (String) ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).get("sorrowLikelihood");
-            String surpriseLikelihood = (String) ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).get("surpriseLikelihood");
-            //Log.v("Classtype", "Anger: " + angerLikelihood);
-            //Log.v("Classtype", "Joy: " + joyLikelihood);
-            //Log.v("Classtype", "Sorrow: " + sorrowLikelihood);
-            //Log.v("Classtype", "Surprise: " + surpriseLikelihood);
-            EmotionDataPoint angerDataPoint = new EmotionDataPoint("ANGER", angerLikelihood, time);
-            EmotionDataPoint joyDataPoint = new EmotionDataPoint("JOY", joyLikelihood, time);
-            EmotionDataPoint sorrowDataPoint = new EmotionDataPoint("SORROW", sorrowLikelihood, time);
-            EmotionDataPoint surpriseDataPoint = new EmotionDataPoint("SURPRISE", surpriseLikelihood, time);
+            String angerLikelihood = ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getAngerLikelihood();
+            String joyLikelihood = ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getJoyLikelihood();
+            String sorrowLikelihood = ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getSorrowLikelihood();
+            String surpriseLikelihood = ((FaceAnnotation) ((ArrayList)response.get("faceAnnotations")).get(0)).getSorrowLikelihood();
+            String[] likelihoodsa = {angerLikelihood, joyLikelihood, sorrowLikelihood, surpriseLikelihood};
+            List<String> likelihoods =  Arrays.asList(likelihoodsa);
 
-            if (!map.containsKey(appName))
-                map.put(appName, new ArrayList<EmotionDataPoint>());
 
-            map.get(appName).add(angerDataPoint);
-            map.get(appName).add(joyDataPoint);
-            map.get(appName).add(sorrowDataPoint);
-            map.get(appName).add(surpriseDataPoint);
+            int occurrences = Collections.frequency(likelihoods, "VERY_LIKELY")+
+                              Collections.frequency(likelihoods, "LIKELY")+
+                              Collections.frequency(likelihoods, "POSSIBLE");
 
-            Log.v("CloudVisionTask", "Hashmap: " + Arrays.toString(map.entrySet().toArray()));
+            if (!data.containsKey(appName))
+                data.put(appName, new ArrayList<Pair>());
+
+            if (occurrences == 0 || occurrences > 1)
+                data.get(appName).add(new Pair(time, Emotion.NEUTRAL));
+            else
+                for (int i = 0; i < likelihoods.size(); i++){
+                    if (likelihoods.get(i).equals("VERY_LIKELY") || likelihoods.get(i).equals("LIKELY") || likelihoods.get(i).equals("POSSIBLE"))
+                    {
+                        switch (i){
+                            case 1:
+                                data.get(appName).add(new Pair(time, Emotion.ANGER));
+                            case 2:
+                                data.get(appName).add(new Pair(time, Emotion.JOY));
+                            case 3:
+                                data.get(appName).add(new Pair(time, Emotion.SORROW));
+                            case 4:
+                                data.get(appName).add(new Pair(time, Emotion.SURPRISE));
+                        }
+                    }
+                }
+
+            Log.v("CloudVisionTask", "Hashmap: " + Arrays.toString(data.entrySet().toArray()));
         }catch (Exception e){
             Log.e("CloudVisionTask", e.getLocalizedMessage());
         }
 
         return null;
     }
+
+
+    public class Pair implements Comparable<Pair> {
+        public String time;
+
+        @Override
+        public String toString() {
+            return "Pair{" +
+                    "time='" + time + '\'' +
+                    ", value=" + value +
+                    '}';
+        }
+
+        public Emotion value;
+
+        public Pair(String time, Emotion value){
+            this.time = time;
+            this.value = value;
+        }
+
+        @Override
+        public int compareTo(Pair other) {
+            return -1;
+        }
+    }
+
+    public enum Emotion {
+        SORROW, JOY, ANGER, SURPRISE, NEUTRAL;
+        public static final Emotion values[] = values();
+    }
+
+    public String getEnumString(Emotion e){
+        if (e == Emotion.ANGER){
+            return "Anger";
+        } else if (e == Emotion.JOY) {
+            return "Joy";
+        } else if (e == Emotion.SORROW) {
+            return "Sorrow";
+        } else if (e == Emotion.SURPRISE) {
+            return "Surprise";
+        } else if (e == Emotion.NEUTRAL) {
+            return "Neutral";
+        }
+
+        return " ";
+    }
+
+
 
 
 }

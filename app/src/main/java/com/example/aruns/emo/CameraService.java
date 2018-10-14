@@ -2,22 +2,16 @@ package com.example.aruns.emo;
 
 import android.app.ActivityManager;
 import android.app.Service;
-import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
-import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.media.MediaRecorder;
 import android.os.*;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.Size;
-import android.view.SurfaceView;
 import android.widget.Toast;
 
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -25,13 +19,9 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionRequestInitializer;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 public class CameraService extends Service {
 
