@@ -104,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         //LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-
-
         Set<String> keys = Information.information.data.keySet();
         GraphView graph;
         for(String key : keys) {
