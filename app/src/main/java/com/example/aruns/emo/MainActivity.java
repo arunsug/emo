@@ -2,18 +2,19 @@ package com.example.aruns.emo;
 
 import android.Manifest;
 import android.app.ActionBar;
-import android.content.Context;
 import android.content.Intent;
+import android.content.ReceiverCallNotAllowedException;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.icu.text.IDNA;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -28,125 +29,62 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionRequestInitializer;
+
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.ValueDependentColor;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
+/*
+Okay ISSUES
+
+IMPORTANT
+we need to test on another phone for demoing
+
+????dealing with tht usage page that keeps appearing
+
+title of first graph is not visible
+
+ */
 
 public class MainActivity extends AppCompatActivity {
 
+    RecyclerView recyclerView;
 
-    public DefaultLabelFormatter formatter;
-    ValueDependentColor<DataPoint> colorer;
-    private LinearLayout lin;
-    private HashMap<String, GraphView> graphs;
-    private LinearLayout.LayoutParams params;
-
+    GraphAdapter graphAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        lin = (LinearLayout)findViewById(R.id.mainLinear);
+        graphAdapter = new GraphAdapter(this);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(graphAdapter);
 
         Log.d(this.getLocalClassName(),"Service Created");
         handlePermissions();
         startService(new Intent(this, CameraService.class));
-
-        formatter =  new DefaultLabelFormatter() {
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if (isValueX) {
-                    // show normal x value
-                    if (value < 6)
-                        return Information.getEnumString(Emotion.values[(int)value-1]);
-                    else
-                        return ((int)value)+"";
-                } else {
-                    // show currency for y values
-                    return super.formatLabel(value, isValueX);
-                }
-            }
-        };
-
-        colorer = new ValueDependentColor<DataPoint>() {
-            @Override
-            public int get(DataPoint data) {
-                return Color.rgb(50, (int) (6-data.getX())*255/6, (int) data.getX()*255/6);
-            }
-        };
-
-        params = new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,400);
-        params.leftMargin = 1;
-        params.leftMargin = 1;
-        params.topMargin = 1;
-        params.bottomMargin = 4;
-
-        graphs = new HashMap<>();
-        graph();
     }
 
-    public void showAppData(String app){
+    public void showAppData(View view){
         Intent AppData = new Intent(this, appgraphs.class);
-        AppData.putExtra("APP_NAME", app);
+        AppData.putExtra("APP_NAME", ((GraphView)view).getTitle() );
         startActivity(AppData);
     }
 
     protected void onResume()
     {
         super.onResume();
-        graph();
-    }
-
-    protected void graph() {
-
-
-        //LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        Set<String> keys = Information.information.data.keySet();
-        GraphView graph;
-        for(String key : keys) {
-
-            ArrayList<Pair> cur = Information.information.data.get(key);
-            int[] sums = new int[5];
-
-            for(Pair pair: cur) {
-                sums[pair.value.ordinal()]++;
-            }
-
-            DataPoint[] points = new DataPoint[5];
-            for (int i = 0; i < 5; i++) {
-                points[i] = new DataPoint(i+1, sums[i]);
-            }
-
-            boolean newGraph;
-            if (graphs.containsKey(key)) {
-                graph = graphs.get(key);
-                newGraph = false;
-            } else {
-                graph = new GraphView(this);
-                graphs.put(key, graph);
-                newGraph = true;
-                graph.getViewport().setXAxisBoundsManual(true);
-                graph.getViewport().setMinX(0);
-                graph.getViewport().setMaxX(6);
-            }
-
-            BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
-
-            graph.getGridLabelRenderer().setLabelFormatter(formatter);
-            series.setValueDependentColor(colorer);
-            series.setSpacing(5);
-            series.setDataWidth(1);
-            graph.addSeries(series);
-
-            if (newGraph) {
-                lin.addView((View) graph, params);
-            }
-
+        graphAdapter.notifyDataSetChanged();
+        //6:02 AM app crashed here added if statement
+        if(Information.information == null) {
+            Information.information = new Information();
+            Information.information.createInfoFromMemory(getApplicationContext());
         }
     }
+
 
     public void handlePermissions(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)

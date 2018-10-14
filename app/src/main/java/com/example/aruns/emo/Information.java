@@ -1,6 +1,7 @@
 package com.example.aruns.emo;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 
 public class Information implements Serializable {
     public static Information information;
-    public static HashMap<String, ArrayList<Pair>> data;
+    public HashMap<String, ArrayList<Pair>> data;
 
     public static final int VERY_LIKELY = 5;
     public static final int LIKELY = 4;
@@ -80,9 +81,6 @@ public class Information implements Serializable {
         else return 0;
     }
 
-
-
-
     public void createInfoFromMemory(Context context) {
         try {
             File file = context.getFileStreamPath(Information.DATA_FILE);
@@ -92,7 +90,10 @@ public class Information implements Serializable {
 
             FileInputStream fileIn = context.getApplicationContext().openFileInput(Information.DATA_FILE);
             ObjectInputStream foodIn = new ObjectInputStream(fileIn);
-            Information.information.setData((HashMap<String, ArrayList<Pair>>) foodIn.readObject());
+            HashMap<String, ArrayList<Pair>> fileData = (HashMap<String, ArrayList<Pair>>) foodIn.readObject();
+            fileData.remove("");
+            Information.information.setData(fileData);
+            Log.v("Information", "Serialized data: "+fileData.toString());
             fileIn.close();
             foodIn.close();
 
