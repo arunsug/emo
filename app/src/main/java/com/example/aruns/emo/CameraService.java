@@ -25,7 +25,7 @@ import java.util.List;
 
 public class CameraService extends Service {
 
-    public Context context = this;
+    public Context context;
     public Handler handler = null;
     public static Runnable runnable = null;
 
@@ -36,6 +36,7 @@ public class CameraService extends Service {
 
     @Override
     public void onCreate() {
+        context = this;
         //Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
         //startActivity(intent);
         Toast.makeText(this, "Service created!", Toast.LENGTH_LONG).show();
@@ -65,7 +66,7 @@ public class CameraService extends Service {
 
                         }else{
                             Log.v("CameraService", "Data not null " + imageData.length);
-                            runCloudVisionTask(imageData, getTopAppName(context), getTimeStamp(),  vision);
+                            runCloudVisionTask(imageData, getTopAppName(context), System.currentTimeMillis(),  vision);
                         }
                         c.release();
                     }
@@ -140,7 +141,8 @@ public class CameraService extends Service {
         } catch (PackageManager.NameNotFoundException e)
         {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            context.startActivity(intent);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.getApplicationContext().startActivity(intent);
             return strName;
         }
         return appName;
@@ -192,7 +194,7 @@ public class CameraService extends Service {
         return START_NOT_STICKY;
     }
 
-    public void runCloudVisionTask(byte[] imageData, String appName, String time, Vision vision){
-        (new CloudVisionTask(imageData, appName, time, vision)).execute();
+    public void runCloudVisionTask(byte[] imageData, String appName, long time, Vision vision){
+        (new CloudVisionTask(imageData, appName, time, vision, getApplicationContext())).execute();
     }
 }

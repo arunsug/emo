@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isValueX) {
                     // show normal x value
                     if (value < 6)
-                        return CloudVisionTask.getEnumString(CloudVisionTask.Emotion.values[(int)value-1]);
+                        return Information.getEnumString(Emotion.values[(int)value-1]);
                     else
                         return ((int)value)+"";
                 } else {
@@ -115,14 +115,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Set<String> keys = CloudVisionTask.data.keySet();
+        Set<String> keys = Information.information.data.keySet();
         GraphView graph;
         for(String key : keys) {
 
-            ArrayList<CloudVisionTask.Pair> cur = CloudVisionTask.data.get(key);
+            ArrayList<Pair> cur = Information.information.data.get(key);
             int[] sums = new int[5];
 
-            for(CloudVisionTask.Pair pair: cur) {
+            for(Pair pair: cur) {
                 sums[pair.value.ordinal()]++;
             }
 
