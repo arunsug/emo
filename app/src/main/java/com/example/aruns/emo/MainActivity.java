@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ReceiverCallNotAllowedException;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.icu.text.IDNA;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -57,15 +58,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showAppData(View view){
-        Intent AppData = new Intent(this, appgraphs.class);
-        AppData.putExtra("APP_NAME", ((GraphView)view).getTitle() );
-        startActivity(AppData);
+        //Intent AppData = new Intent(this, appgraphs.class);
+        //AppData.putExtra("APP_NAME", ((GraphView)view).getTitle() );
+        //startActivity(AppData);
     }
 
     protected void onResume()
     {
         super.onResume();
-        Log.v("MainActivity", "datachange");
         graphAdapter.notifyDataSetChanged();
         Information.information.writeInfoToMemory(this);
     }
