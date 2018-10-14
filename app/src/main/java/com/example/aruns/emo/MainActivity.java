@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
+        graph();
     }
 
     protected void graph() {
