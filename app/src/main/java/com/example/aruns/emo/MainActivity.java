@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -90,16 +91,25 @@ public class MainActivity extends AppCompatActivity {
         params.topMargin = 1;
         params.bottomMargin = 4;
 
-        for(int i =0; i<5; i++) {
+
+        Set<String> keys = CloudVisionTask.data.keySet();
+
+        for(String key : keys) {
+
+            ArrayList<CloudVisionTask.Pair> cur = CloudVisionTask.data.get(key);
+            int[] sums = new int[5];
+
+            for(CloudVisionTask.Pair pair: cur) {
+                sums[pair.value.ordinal()]++;
+            }
+
+            DataPoint[] points = new DataPoint[5];
+            for (int i = 0; i < 5; i++) {
+                points[i] = new DataPoint(i+1, sums[i]);
+            }
 
             GraphView graph = new GraphView(this);
-            BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[]{
-                    new DataPoint(1, 400),
-                    new DataPoint(2, 900),
-                    new DataPoint(3, 700),
-                    new DataPoint(4, 100),
-                    new DataPoint(5, 500),
-            });
+            BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
 
             graph.getGridLabelRenderer().setLabelFormatter(formatter);
             series.setValueDependentColor(colorer);

@@ -126,11 +126,11 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
     }
 
     public static String getEnumString(Emotion e){
-        if (e == Emotion.ANGER){
+        if (e == Emotion.SORROW){
             return "Anger";
         } else if (e == Emotion.JOY) {
             return "Joy";
-        } else if (e == Emotion.SORROW) {
+        } else if (e == Emotion.ANGER) {
             return "Sorrow";
         } else if (e == Emotion.SURPRISE) {
             return "Surprise";
