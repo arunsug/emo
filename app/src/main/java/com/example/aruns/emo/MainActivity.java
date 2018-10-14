@@ -33,23 +33,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 public class MainActivity extends AppCompatActivity {
 
-    public class Pair implements Comparable<Pair> {
-        public String time;
-        public Emotion value;
 
-        @Override
-        public int compareTo(Pair other) {
-            return -1;
-        }
-    }
-
-    public enum Emotion {
-        SORROW, JOY, ANGER, SURPRISE, NEUTRAL;
-        public static final Emotion values[] = values();
-    }
-
-    // App name mapped to list of times with emotion values
-    public static final HashMap<String, ArrayList<Pair>> data = new HashMap<>();
     public DefaultLabelFormatter formatter;
     ValueDependentColor<DataPoint> colorer;
     LinearLayout lin;
@@ -70,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isValueX) {
                     // show normal x value
                     if (value < 6)
-                        return getEnumString(Emotion.values[(int)value-1]);
+                        return CloudVisionTask.getEnumString(CloudVisionTask.Emotion.values[(int)value-1]);
                     else
                         return ((int)value)+"";
                 } else {
@@ -138,21 +122,5 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA}, 1);
         }
-    }
-
-    public String getEnumString(Emotion e){
-        if (e == Emotion.ANGER){
-            return "Anger";
-        } else if (e == Emotion.JOY) {
-            return "Joy";
-        } else if (e == Emotion.SORROW) {
-            return "Sorrow";
-        } else if (e == Emotion.SURPRISE) {
-            return "Surprise";
-        } else if (e == Emotion.NEUTRAL) {
-            return "Neutral";
-        }
-
-        return "";
     }
 }

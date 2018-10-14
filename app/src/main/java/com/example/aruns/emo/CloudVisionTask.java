@@ -125,7 +125,7 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
         public static final Emotion values[] = values();
     }
 
-    public String getEnumString(Emotion e){
+    public static String getEnumString(Emotion e){
         if (e == Emotion.ANGER){
             return "Anger";
         } else if (e == Emotion.JOY) {
