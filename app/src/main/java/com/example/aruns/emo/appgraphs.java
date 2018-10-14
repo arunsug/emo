@@ -3,9 +3,14 @@ package com.example.aruns.emo;
 import android.app.ActionBar;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
@@ -19,8 +24,9 @@ public class appgraphs extends Activity {
     String app;
     private LinearLayout.LayoutParams params;
     GraphView[] graphs = new GraphView[5];
+    TextView appName;
     private LinearLayout lin;
-
+    public DefaultLabelFormatter formatter;
 
 
     @Override
@@ -29,21 +35,44 @@ public class appgraphs extends Activity {
         setContentView(R.layout.activity_appgraphs);
         lin = findViewById(R.id.appgraphslin);
         params = new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,400);
-        params.leftMargin = 1;
-        params.leftMargin = 1;
-        params.topMargin = 1;
-        params.bottomMargin = 4;
+        params.leftMargin = 5;
+        params.leftMargin = 5;
+        params.topMargin = 5;
+        params.bottomMargin = 5;
 
+        formatter =  new DefaultLabelFormatter() {
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+                if (isValueX) {
+                    return "";
+                } else {
+                    return super.formatLabel(value, isValueX);
+                }
+            }
+        };
+        appName = new TextView(this);
+        lin.addView(appName);
         for (int i =0; i < 5; i++) {
             graphs[i] = new GraphView(this);
+            graphs[i].getGridLabelRenderer().setLabelFormatter(formatter);
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<> (new DataPoint[] { new DataPoint(0,0)} );
+            series.setDrawDataPoints(true);
+            series.setThickness(5);
+            graphs[i].addSeries(series);
+            graphs[i].setTitle(Information.getEnumString(Emotion.values[i]));
             lin.addView(graphs[i], params);
         }
         app = getIntent().getExtras().getString("APP_NAME");
+        appName.setText(app);
+        appName.setAllCaps(true);
+        appName.setGravity(Gravity.CENTER_HORIZONTAL);
+        appName.setTextSize(20);
         graphApp();
     }
 
     @Override
-    protected void onResume() {
+    protected void onStart() {
+        super.onStart();
         super.onResume();
         app = getIntent().getExtras().getString("APP_NAME");
         graphApp();
@@ -67,8 +96,10 @@ public class appgraphs extends Activity {
         }
 
         for ( int i =0; i<5; i++) {
-
             LineGraphSeries<DataPoint> series = new LineGraphSeries<>(allPoints.get(Emotion.values[i]).toArray(new DataPoint[0]));
+            series.setDrawDataPoints(true);
+            series.setThickness(2);
+            graphs[i].removeAllSeries();
             graphs[i].addSeries(series);
 
         }

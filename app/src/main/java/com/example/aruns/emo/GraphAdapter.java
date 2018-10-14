@@ -75,8 +75,6 @@ public class GraphAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder h, int position) {
 
         ArrayList<Pair> pairs =  Information.information.data.get((new ArrayList(Information.information.data.keySet())).get(position));
-        //Log.v("GraphAdapter", "DAtaser changed: "+pairs.toString());
-        //((GraphHolder) h).textView.setText("Hello");
 
         int[] sums = new int[5];
 
@@ -92,12 +90,12 @@ public class GraphAdapter extends RecyclerView.Adapter {
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
 
         ((GraphHolder) h).graphView.getGridLabelRenderer().setLabelFormatter(formatter);
-
         ((GraphHolder) h).graphView.setTitle((new ArrayList<>(Information.information.data.keySet())).get(position) );
 
         series.setValueDependentColor(colorer);
         series.setSpacing(5);
         series.setDataWidth(1);
+
         ((GraphHolder) h).graphView.removeAllSeries();
         ((GraphHolder) h).graphView.addSeries(series);
     }
@@ -109,10 +107,12 @@ public class GraphAdapter extends RecyclerView.Adapter {
 
     public class GraphHolder extends RecyclerView.ViewHolder {
         GraphView graphView;
-        //TextView textView;
+
         public GraphHolder(View itemView) {
             super(itemView);
+
             graphView = itemView.findViewById(R.id.graphView);
+
             FrameLayout.LayoutParams p = new FrameLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, 400);
             p.leftMargin = 1;
             p.topMargin = 1;
