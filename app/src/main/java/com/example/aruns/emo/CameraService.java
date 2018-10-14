@@ -26,6 +26,7 @@ import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionRequestInitializer;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -74,7 +75,7 @@ public class CameraService extends Service {
 
                         }else{
                             Log.v("CameraService", "Data not null " + imageData.length);
-                            runCloudVisionTask(imageData, vision);
+                            runCloudVisionTask(imageData, getTopAppName(context), getTimeStamp(),  vision);
                         }
                         c.release();
                     }
@@ -124,6 +125,11 @@ public class CameraService extends Service {
         return cam;
     }
 
+    public String getTimeStamp(){
+        Timestamp ts = new Timestamp((new Date()).getTime());
+        return ts.toString();
+    }
+
     public static String getTopAppName(Context context) {
         ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         String strName = "";
@@ -141,8 +147,11 @@ public class CameraService extends Service {
         String appName = null;
         try {
             appName = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(strName, PackageManager.GET_META_DATA));
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+        } catch (PackageManager.NameNotFoundException e)
+        {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            context.startActivity(intent);
+            return strName;
         }
         return appName;
     }
@@ -193,7 +202,7 @@ public class CameraService extends Service {
         return START_NOT_STICKY;
     }
 
-    public void runCloudVisionTask(byte[] imageData, Vision vision){
-        (new CloudVisionTask(imageData, vision)).execute();
+    public void runCloudVisionTask(byte[] imageData, String appName, String time, Vision vision){
+        (new CloudVisionTask(imageData, appName, time, vision)).execute();
     }
 }
