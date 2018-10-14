@@ -25,7 +25,7 @@ import java.util.List;
 
 public class CameraService extends Service {
 
-    public Context context = this;
+    public Context context;
     public Handler handler = null;
     public static Runnable runnable = null;
 
@@ -36,6 +36,7 @@ public class CameraService extends Service {
 
     @Override
     public void onCreate() {
+        context = this;
         //Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
         //startActivity(intent);
         Toast.makeText(this, "Service created!", Toast.LENGTH_LONG).show();
@@ -140,7 +141,8 @@ public class CameraService extends Service {
         } catch (PackageManager.NameNotFoundException e)
         {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            context.startActivity(intent);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.getApplicationContext().startActivity(intent);
             return strName;
         }
         return appName;

@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.vision.v1.Vision;
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     public static GraphAdapter graphAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
