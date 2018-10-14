@@ -65,7 +65,7 @@ public class CameraService extends Service {
 
                         }else{
                             Log.v("CameraService", "Data not null " + imageData.length);
-                            runCloudVisionTask(imageData, getTopAppName(context), getTimeStamp(),  vision);
+                            runCloudVisionTask(imageData, getTopAppName(context), System.currentTimeMillis(),  vision);
                         }
                         c.release();
                     }
@@ -192,7 +192,7 @@ public class CameraService extends Service {
         return START_NOT_STICKY;
     }
 
-    public void runCloudVisionTask(byte[] imageData, String appName, String time, Vision vision){
+    public void runCloudVisionTask(byte[] imageData, String appName, long time, Vision vision){
         (new CloudVisionTask(imageData, appName, time, vision, getApplicationContext())).execute();
     }
 }

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isValueX) {
                     // show normal x value
                     if (value < 6)
-                        return CloudVisionTask.getEnumString(CloudVisionTask.Emotion.values[(int)value-1]);
+                        return Information.getEnumString(Emotion.values[(int)value-1]);
                     else
                         return ((int)value)+"";
                 } else {

@@ -25,10 +25,10 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
     public Vision vision;
     public byte[] imageData;
     public String appName;
-    public String time;
+    public long time;
     public Context context;
 
-    public CloudVisionTask(byte[] imageData, String appName, String time, Vision vision, Context context) {
+    public CloudVisionTask(byte[] imageData, String appName, long time, Vision vision, Context context) {
         this.imageData = imageData;
         this.appName = appName;
         this.time = time;

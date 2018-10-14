@@ -5,7 +5,7 @@ import com.example.aruns.emo.Emotion;
 import java.io.Serializable;
 
 public class Pair implements Serializable, Comparable<Pair> {
-    public String time;
+    public long time;
     public Emotion value;
 
     @Override
@@ -16,7 +16,7 @@ public class Pair implements Serializable, Comparable<Pair> {
                 '}';
     }
 
-    public Pair(String time, Emotion value){
+    public Pair(long time, Emotion value){
         this.time = time;
         this.value = value;
     }
