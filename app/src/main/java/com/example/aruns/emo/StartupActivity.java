@@ -11,11 +11,14 @@ public class StartupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startup);
+        Information.information = new Information();
+        Information.information.createInfoFromMemory(getApplicationContext());
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         startActivity( new Intent(StartupActivity.this, MainActivity.class));
+        finish();
         return true;
     }
 }

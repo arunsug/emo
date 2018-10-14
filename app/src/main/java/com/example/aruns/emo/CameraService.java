@@ -193,6 +193,6 @@ public class CameraService extends Service {
     }
 
     public void runCloudVisionTask(byte[] imageData, String appName, String time, Vision vision){
-        (new CloudVisionTask(imageData, appName, time, vision)).execute();
+        (new CloudVisionTask(imageData, appName, time, vision, getApplicationContext())).execute();
     }
 }

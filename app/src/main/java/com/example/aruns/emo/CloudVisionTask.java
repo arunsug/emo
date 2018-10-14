@@ -1,5 +1,6 @@
 package com.example.aruns.emo;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -12,6 +13,7 @@ import com.google.api.services.vision.v1.model.FaceAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,18 +22,18 @@ import java.util.List;
 
 public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
 
-    public static final HashMap<String, ArrayList<Pair>> data = new HashMap<>();
-
     public Vision vision;
     public byte[] imageData;
     public String appName;
     public String time;
+    public Context context;
 
-    public CloudVisionTask(byte[] imageData, String appName, String time, Vision vision) {
+    public CloudVisionTask(byte[] imageData, String appName, String time, Vision vision, Context context) {
         this.imageData = imageData;
         this.appName = appName;
         this.time = time;
         this.vision = vision;
+        this.context = context;
     }
 
     @Override
@@ -65,83 +67,38 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
                               Collections.frequency(likelihoods, "LIKELY")+
                               Collections.frequency(likelihoods, "POSSIBLE");
 
-            if (!data.containsKey(appName))
-                data.put(appName, new ArrayList<Pair>());
+            if (!Information.information.data.containsKey(appName))
+                Information.information.data.put(appName, new ArrayList<Pair>());
 
             if (occurrences == 0 || occurrences > 1)
-                data.get(appName).add(new Pair(time, Emotion.NEUTRAL));
+                Information.information.data.get(appName).add(new Pair(time, Emotion.NEUTRAL));
             else
                 for (int i = 0; i < likelihoods.size(); i++){
                     if (likelihoods.get(i).equals("VERY_LIKELY") || likelihoods.get(i).equals("LIKELY") || likelihoods.get(i).equals("POSSIBLE"))
                     {
                         switch (i){
                             case 1:
-                                data.get(appName).add(new Pair(time, Emotion.ANGER));
+                                Information.information.data.get(appName).add(new Pair(time, Emotion.ANGER));
+                                Information.information.createInfoFromMemory(this.context);
                             case 2:
-                                data.get(appName).add(new Pair(time, Emotion.JOY));
+                                Information.information.data.get(appName).add(new Pair(time, Emotion.JOY));
+                                Information.information.createInfoFromMemory(this.context);
                             case 3:
-                                data.get(appName).add(new Pair(time, Emotion.SORROW));
+                                Information.information.data.get(appName).add(new Pair(time, Emotion.SORROW));
+                                Information.information.createInfoFromMemory(this.context);
                             case 4:
-                                data.get(appName).add(new Pair(time, Emotion.SURPRISE));
+                                Information.information.data.get(appName).add(new Pair(time, Emotion.SURPRISE));
+                                Information.information.createInfoFromMemory(this.context);
                         }
                     }
                 }
 
-            Log.v("CloudVisionTask", "Hashmap: " + Arrays.toString(data.entrySet().toArray()));
+            Log.v("CloudVisionTask", "Hashmap: " + Arrays.toString(Information.information.data.entrySet().toArray()));
         }catch (Exception e){
             Log.e("CloudVisionTask", e.getLocalizedMessage());
         }
 
         return null;
     }
-
-
-    public class Pair implements Comparable<Pair> {
-        public String time;
-
-        @Override
-        public String toString() {
-            return "Pair{" +
-                    "time='" + time + '\'' +
-                    ", value=" + value +
-                    '}';
-        }
-
-        public Emotion value;
-
-        public Pair(String time, Emotion value){
-            this.time = time;
-            this.value = value;
-        }
-
-        @Override
-        public int compareTo(Pair other) {
-            return -1;
-        }
-    }
-
-    public enum Emotion {
-        SORROW, JOY, ANGER, SURPRISE, NEUTRAL;
-        public static final Emotion values[] = values();
-    }
-
-    public static String getEnumString(Emotion e){
-        if (e == Emotion.ANGER){
-            return "Anger";
-        } else if (e == Emotion.JOY) {
-            return "Joy";
-        } else if (e == Emotion.SORROW) {
-            return "Sorrow";
-        } else if (e == Emotion.SURPRISE) {
-            return "Surprise";
-        } else if (e == Emotion.NEUTRAL) {
-            return "Neutral";
-        }
-
-        return " ";
-    }
-
-
-
 
 }
