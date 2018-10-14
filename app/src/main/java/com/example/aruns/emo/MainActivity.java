@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     public DefaultLabelFormatter formatter;
     ValueDependentColor<DataPoint> colorer;
-    LinearLayout lin;
+    private LinearLayout lin;
     private HashMap<String, GraphView> graphs;
     private LinearLayout.LayoutParams params;
 
@@ -88,6 +88,12 @@ public class MainActivity extends AppCompatActivity {
         graph();
     }
 
+    public void showAppData(String app){
+        Intent AppData = new Intent(this, appgraphs.class);
+        AppData.putExtra("APP_NAME", app);
+        startActivity(AppData);
+    }
+
     protected void onResume()
     {
         super.onResume();
@@ -125,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
                 graph = new GraphView(this);
                 graphs.put(key, graph);
                 newGraph = true;
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(6);
             }
 
             BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
