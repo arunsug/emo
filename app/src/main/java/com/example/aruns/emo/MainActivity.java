@@ -40,7 +40,16 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
+<<<<<<< HEAD
     GraphAdapter graphAdapter;
+=======
+    public DefaultLabelFormatter formatter;
+    ValueDependentColor<DataPoint> colorer;
+    private LinearLayout lin;
+    private HashMap<String, GraphView> graphs;
+    private LinearLayout.LayoutParams params;
+
+>>>>>>> 6bad119df04e418e97ae7f99a9559ead7292394d
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +63,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d(this.getLocalClassName(),"Service Created");
         handlePermissions();
         startService(new Intent(this, CameraService.class));
+    }
+
+    public void showAppData(String app){
+        Intent AppData = new Intent(this, appgraphs.class);
+        AppData.putExtra("APP_NAME", app);
+        startActivity(AppData);
     }
 
     protected void onResume()
