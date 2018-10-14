@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,11 +52,19 @@ title of first graph is not visible
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-
+    static boolean first = false;
     GraphAdapter graphAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(first == false) {
+            TextView firstText = new TextView(this);
+            firstText.setText("You don't have any data yet!");
+            ((LinearLayout) findViewById(R.id.mainLinear)).addView(firstText);
+            first = true;
+        }
+
         setContentView(R.layout.activity_main);
         graphAdapter = new GraphAdapter(this);
         recyclerView = findViewById(R.id.recyclerView);
