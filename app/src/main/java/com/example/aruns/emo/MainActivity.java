@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.vision.v1.Vision;
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     ValueDependentColor<DataPoint> colorer;
     LinearLayout lin;
     private HashMap<String, GraphView> graphs;
+    private LinearLayout.LayoutParams params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +74,32 @@ public class MainActivity extends AppCompatActivity {
         colorer = new ValueDependentColor<DataPoint>() {
             @Override
             public int get(DataPoint data) {
-                return Color.rgb((int) data.getX()*255/6, 100, 100);
+                return Color.rgb(50, (int) (6-data.getX())*255/6, (int) data.getX()*255/6);
             }
         };
 
+        params = new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,400);
+        params.leftMargin = 1;
+        params.leftMargin = 1;
+        params.topMargin = 1;
+        params.bottomMargin = 4;
+
+        GraphView graph = new GraphView(this);
+
+        DataPoint[] points = {new DataPoint(1, 1), new DataPoint(2, 2), new DataPoint(3, 3),
+                 new DataPoint(4, 4), new DataPoint(5, 5)};
+
+        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
+
+        graph.getGridLabelRenderer().setLabelFormatter(formatter);
+        series.setValueDependentColor(colorer);
+        series.setSpacing(5);
+        series.setDataWidth(1);
+        graph.addSeries(series);
+        lin.addView(graph, params);
+
         graphs = new HashMap<>();
         graph();
-
     }
 
     protected void onResume()
@@ -88,11 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,400);
-        params.leftMargin = 1;
-        params.leftMargin = 1;
-        params.topMargin = 1;
-        params.bottomMargin = 4;
+
 
 
         Set<String> keys = CloudVisionTask.data.keySet();
@@ -129,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
             series.setDataWidth(1);
             graph.addSeries(series);
 
-            //final View rowView = inflater.inflate(R.layout.activity_main, null);
             if (newGraph) {
                 lin.addView((View) graph, params);
             }
