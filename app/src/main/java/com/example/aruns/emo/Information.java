@@ -2,6 +2,7 @@ package com.example.aruns.emo;
 
 import android.content.Context;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -13,15 +14,38 @@ import java.util.HashMap;
 
 public class Information implements Serializable {
     public static Information information;
-    public static HashMap<String, ArrayList<Pair>> data = new HashMap<>();
+    public static HashMap<String, ArrayList<Pair>> data;
 
     public static final int VERY_LIKELY = 5;
     public static final int LIKELY = 4;
     public static final int POSSIBLE = 3;
     public static final int UNLIKELY = 2;
     public static final int VERY_UNLIKELY = 1;
-
     public static final int UNKNOWN = 0;
+
+    private static final String DATA_FILE = "emo_data";
+
+    public Information() {
+         this.data = new HashMap<>();
+    }
+
+
+    public static String getEnumString(Emotion e){
+        if (e == Emotion.ANGER){
+            return "Anger";
+        } else if (e == Emotion.JOY) {
+            return "Joy";
+        } else if (e == Emotion.SORROW) {
+            return "Sorrow";
+        } else if (e == Emotion.SURPRISE) {
+            return "Surprise";
+        } else if (e == Emotion.NEUTRAL) {
+            return "Neutral";
+        }
+
+        return " ";
+    }
+
 
     public static Emotion getIntAnswer(int[] arr) {
         //int angerS, int joyS, int sorrowS, int surpriseS
@@ -56,31 +80,15 @@ public class Information implements Serializable {
         else return 0;
     }
 
-    private static final String DATA_FILE = "emo_data";
-
-    public Information() {
-    };
 
 
-    public static String getEnumString(Emotion e){
-        if (e == Emotion.ANGER){
-            return "Anger";
-        } else if (e == Emotion.JOY) {
-            return "Joy";
-        } else if (e == Emotion.SORROW) {
-            return "Sorrow";
-        } else if (e == Emotion.SURPRISE) {
-            return "Surprise";
-        } else if (e == Emotion.NEUTRAL) {
-            return "Neutral";
-        }
 
-        return " ";
-    }
-
-
-    public boolean createInfoFromMemory(Context context) {
+    public void createInfoFromMemory(Context context) {
         try {
+            File file = context.getFileStreamPath(Information.DATA_FILE);
+            if(file == null || !file.exists()) {
+                return;
+            }
 
             FileInputStream fileIn = context.getApplicationContext().openFileInput(Information.DATA_FILE);
             ObjectInputStream foodIn = new ObjectInputStream(fileIn);
@@ -91,11 +99,8 @@ public class Information implements Serializable {
             if(Information.information.getData() == null) {
                 throw new NullPointerException("Did not instantiate properly from files/files didnt exist");
             }
-
-            return true;
         } catch (Exception c) {
             c.printStackTrace();
-            return false;
         }
     }
 
