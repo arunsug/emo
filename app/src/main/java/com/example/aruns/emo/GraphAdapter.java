@@ -93,7 +93,6 @@ public class GraphAdapter extends RecyclerView.Adapter {
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
 
         ((GraphHolder) h).graphView.getGridLabelRenderer().setLabelFormatter(formatter);
-
         series.setValueDependentColor(colorer);
         series.setSpacing(5);
         series.setDataWidth(1);

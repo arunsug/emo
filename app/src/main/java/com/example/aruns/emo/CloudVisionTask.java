@@ -67,7 +67,6 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
 
             Information.information.data.get(appName).add(new Pair(time, answer));
 
-
             Log.v("CloudVisionTask", "Hashmap: " + Arrays.toString(Information.information.data.entrySet().toArray()));
         }catch (Exception e){
             Log.e("CloudVisionTask", e.getLocalizedMessage());
