@@ -27,6 +27,11 @@ public class Information implements Serializable {
 
     public Information() {
          this.data = new HashMap<>();
+         //ArrayList<Pair> pairs = new ArrayList<>();
+         //pairs.add(new Pair(1234, Emotion.ANGER));
+         //this.data.put("APPTEST1", pairs);
+         //this.data.put("APPTEST2", pairs);
+         //this.data.put("APPTEST3", pairs);
     }
 
 

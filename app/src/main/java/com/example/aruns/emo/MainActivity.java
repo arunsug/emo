@@ -39,9 +39,8 @@ import com.jjoe64.graphview.series.DataPoint;
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    public static GraphAdapter graphAdapter;
 
-
+    GraphAdapter graphAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

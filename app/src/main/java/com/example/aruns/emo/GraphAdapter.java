@@ -8,11 +8,15 @@ import android.icu.text.IDNA;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityRecord;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -47,7 +51,7 @@ public class GraphAdapter extends RecyclerView.Adapter {
                 if (isValueX) {
                     // show normal x value
                     if (value < 6)
-                        return Information.getEnumString(Emotion.values[(int)value-1]);
+                        return Information.getEnumString(Emotion.values[(int)value]);
                     else
                         return ((int)value)+"";
                 } else {
@@ -70,9 +74,10 @@ public class GraphAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder h, int position) {
 
-        GraphHolder holder = (GraphHolder) h;
-
         ArrayList<Pair> pairs =  Information.information.data.get((new ArrayList(Information.information.data.keySet())).get(position));
+        //Log.v("GraphAdapter", "DAtaser changed: "+pairs.toString());
+        //((GraphHolder) h).textView.setText("Hello");
+
         int[] sums = new int[5];
 
         for(Pair pair: pairs) {
@@ -84,13 +89,20 @@ public class GraphAdapter extends RecyclerView.Adapter {
             points[i] = new DataPoint(i+1, sums[i]);
         }
 
+        ((GraphHolder) h).graphView.getViewport().setXAxisBoundsManual(true);
+        ((GraphHolder) h).graphView.getViewport().setMinX(0);
+        ((GraphHolder) h).graphView.getViewport().setMaxX(6);
+
+
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
 
-        holder.graphView.getGridLabelRenderer().setLabelFormatter(formatter);
+        ((GraphHolder) h).graphView.getGridLabelRenderer().setLabelFormatter(formatter);
+
         series.setValueDependentColor(colorer);
         series.setSpacing(5);
         series.setDataWidth(1);
-        holder.graphView.addSeries(series);
+        ((GraphHolder) h).graphView.addSeries(series);
+
     }
 
     @Override
@@ -100,10 +112,16 @@ public class GraphAdapter extends RecyclerView.Adapter {
 
     public class GraphHolder extends RecyclerView.ViewHolder {
         GraphView graphView;
-
+        //TextView textView;
         public GraphHolder(View itemView) {
             super(itemView);
             graphView = itemView.findViewById(R.id.graphView);
+            FrameLayout.LayoutParams p = new FrameLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, 400);
+            p.leftMargin = 1;
+            p.topMargin = 1;
+            p.bottomMargin = 4;
+            ((View)graphView).setLayoutParams(p);
+            //textView = itemView.findViewById(R.id.textView);
         }
     }
 }
