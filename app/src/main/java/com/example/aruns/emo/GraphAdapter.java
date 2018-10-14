@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.icu.text.IDNA;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -46,7 +47,7 @@ public class GraphAdapter extends RecyclerView.Adapter {
                 if (isValueX) {
                     // show normal x value
                     if (value < 6)
-                        return CloudVisionTask.getEnumString(CloudVisionTask.Emotion.values[(int)value-1]);
+                        return Information.getEnumString(Emotion.values[(int)value-1]);
                     else
                         return ((int)value)+"";
                 } else {
@@ -71,10 +72,10 @@ public class GraphAdapter extends RecyclerView.Adapter {
 
         GraphHolder holder = (GraphHolder) h;
 
-        ArrayList<CloudVisionTask.Pair> pairs =  CloudVisionTask.data.get((new ArrayList(CloudVisionTask.data.keySet())).get(position));
+        ArrayList<Pair> pairs =  Information.information.data.get((new ArrayList(Information.information.data.keySet())).get(position));
         int[] sums = new int[5];
 
-        for(CloudVisionTask.Pair pair: pairs) {
+        for(Pair pair: pairs) {
             sums[pair.value.ordinal()]++;
         }
 
@@ -94,7 +95,7 @@ public class GraphAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return (new ArrayList(CloudVisionTask.data.keySet())).size();
+        return Information.information.data.keySet().size();
     }
 
     public class GraphHolder extends RecyclerView.ViewHolder {
@@ -105,57 +106,4 @@ public class GraphAdapter extends RecyclerView.Adapter {
             graphView = itemView.findViewById(R.id.graphView);
         }
     }
-
-    /*protected void graph() {
-        LinearLayout lin = (LinearLayout)  ((Activity)context).findViewById(R.id.mainLinear);
-
-        //LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,400);
-        params.leftMargin = 1;
-        params.leftMargin = 1;
-        params.topMargin = 1;
-        params.bottomMargin = 4;
-
-
-
-        GraphView graph;
-        for(String key : keys) {
-
-            ArrayList<CloudVisionTask.Pair> cur = CloudVisionTask.data.get(key);
-            int[] sums = new int[5];
-
-            for(CloudVisionTask.Pair pair: cur) {
-                sums[pair.value.ordinal()]++;
-            }
-
-            DataPoint[] points = new DataPoint[5];
-            for (int i = 0; i < 5; i++) {
-                points[i] = new DataPoint(i+1, sums[i]);
-            }
-
-            boolean newGraph;
-            if (graphs.containsKey(key)) {
-                graph = graphs.get(key);
-                newGraph = false;
-            } else {
-                graph = new GraphView(context);
-                graphs.put(key, graph);
-                newGraph = true;
-            }
-
-            BarGraphSeries<DataPoint> series = new BarGraphSeries<>(points);
-
-            graph.getGridLabelRenderer().setLabelFormatter(formatter);
-            series.setValueDependentColor(colorer);
-            series.setSpacing(5);
-            series.setDataWidth(1);
-            graph.addSeries(series);
-
-            //final View rowView = inflater.inflate(R.layout.activity_main, null);
-            if (newGraph) {
-                lin.addView((View) graph, params);
-            }
-
-        }
-    }*/
 }

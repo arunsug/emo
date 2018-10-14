@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -34,13 +35,17 @@ import com.jjoe64.graphview.series.DataPoint;
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
+    public static GraphAdapter graphAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        graphAdapter = new GraphAdapter(this);
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setAdapter(new GraphAdapter(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(graphAdapter);
 
         Log.d(this.getLocalClassName(),"Service Created");
         handlePermissions();
@@ -50,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
+        Log.v("MainActivity", "datachange");
+        graphAdapter.notifyDataSetChanged();
     }
 
     public void handlePermissions(){
