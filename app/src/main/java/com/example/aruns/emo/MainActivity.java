@@ -1,6 +1,7 @@
 package com.example.aruns.emo;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,7 +11,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public enum Emotion {
-        LEFT, SORROW, JOY, ANGER, SURPRISE, NEUTRAL, RIGHT;
+        SORROW, JOY, ANGER, SURPRISE, NEUTRAL;
         public static final Emotion values[] = values();
     }
 
@@ -49,12 +52,14 @@ public class MainActivity extends AppCompatActivity {
     public static final HashMap<String, ArrayList<Pair>> data = new HashMap<>();
     public DefaultLabelFormatter formatter;
     ValueDependentColor<DataPoint> colorer;
-    static final String[] apps = {"Facebook", "Instagram", "Snapchat", "Whatsapp"};
+    LinearLayout lin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        lin = (LinearLayout)findViewById(R.id.mainLinear);
+
         Log.d(this.getLocalClassName(),"Service Created");
         handlePermissions();
         startService(new Intent(this, CameraService.class));
@@ -64,10 +69,8 @@ public class MainActivity extends AppCompatActivity {
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
                     // show normal x value
-                    Log.v("INT VALUE", ""+(int)value);
-                    Log.v("ENUM INT", ""+Emotion.values.length);
-                    if (value < 7)
-                        return getEnumString(Emotion.values[(int)value]);
+                    if (value < 6)
+                        return getEnumString(Emotion.values[(int)value-1]);
                     else
                         return ((int)value)+"";
                 } else {
@@ -85,15 +88,28 @@ public class MainActivity extends AppCompatActivity {
         };
 
         graph();
+
+    }
+
+    protected void onResume()
+    {
+        super.onResume();
     }
 
     protected void graph() {
-        LinearLayout lin = (LinearLayout)findViewById(R.id.mainLinear);
 
-        for(int i =0; i<0; i++) {
+
+        //LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,400);
+        params.leftMargin = 1;
+        params.leftMargin = 1;
+        params.topMargin = 1;
+        params.bottomMargin = 4;
+
+        for(int i =0; i<5; i++) {
 
             GraphView graph = new GraphView(this);
-            BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
+            BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[]{
                     new DataPoint(1, 400),
                     new DataPoint(2, 900),
                     new DataPoint(3, 700),
@@ -107,7 +123,10 @@ public class MainActivity extends AppCompatActivity {
             series.setDataWidth(1);
             graph.addSeries(series);
 
-            lin.addView(graph);
+            //final View rowView = inflater.inflate(R.layout.activity_main, null);
+
+            lin.addView((View)graph, params);
+
         }
     }
 
@@ -134,6 +153,6 @@ public class MainActivity extends AppCompatActivity {
             return "Neutral";
         }
 
-        return " ";
+        return "";
     }
 }
