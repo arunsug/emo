@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
         startService(new Intent(this, CameraService.class));
     }
 
-    public void showAppData(String app){
+    public void showAppData(View view){
         Intent AppData = new Intent(this, appgraphs.class);
-        AppData.putExtra("APP_NAME", app);
+        AppData.putExtra("APP_NAME", ((GraphView)view).getTitle() );
         startActivity(AppData);
     }
 
@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.v("MainActivity", "datachange");
         graphAdapter.notifyDataSetChanged();
+        Information.information.writeInfoToMemory(this);
     }
 
     public void handlePermissions(){
