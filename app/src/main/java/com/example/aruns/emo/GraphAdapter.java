@@ -73,7 +73,10 @@ public class GraphAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder h, int position) {
-
+        if(Information.information == null) {
+            Information.information = new Information();
+            Information.information.createInfoFromMemory(context);
+        }
         ArrayList<Pair> pairs =  Information.information.data.get((new ArrayList(Information.information.data.keySet())).get(position));
 
         int[] sums = new int[5];
@@ -102,6 +105,7 @@ public class GraphAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
+        // 6:05 AM app crashes here
         return Information.information.data.keySet().size();
     }
 

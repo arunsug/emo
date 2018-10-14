@@ -71,15 +71,21 @@ public class appgraphs extends Activity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
         super.onResume();
+        if(Information.information == null) {
+            Information.information = new Information();
+            Information.information.createInfoFromMemory(getApplicationContext());
+        }
         app = getIntent().getExtras().getString("APP_NAME");
         graphApp();
     }
 
-    public void graphApp(){
-
+    public void graphApp() {
+        if(Information.information == null) {
+            Information.information = new Information();
+            Information.information.createInfoFromMemory(getApplicationContext());
+        }
         ArrayList<Pair> appData = Information.information.data.get(app);
 
         HashMap<Emotion, ArrayList<DataPoint>> allPoints = new HashMap<>();

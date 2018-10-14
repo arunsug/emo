@@ -36,6 +36,23 @@ import com.jjoe64.graphview.ValueDependentColor;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
+/*
+Okay ISSUES
+
+IMPORTANT
+we need to test on another phone for demoing
+
+
+*app is crashing when information.information is null
+*which happens when u switch apps for some reason?
+*maybe we are writing in the wrong place?
+
+
+????dealing with tht usage page that keeps appearing
+
+title of first graph is not visible
+
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,8 +84,13 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onResume();
         graphAdapter.notifyDataSetChanged();
-        Information.information.writeInfoToMemory(this);
+        //6:02 AM app crashed here added if statement
+        if(Information.information == null) {
+            Information.information = new Information();
+            Information.information.createInfoFromMemory(getApplicationContext());
+        }
     }
+
 
     public void handlePermissions(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)

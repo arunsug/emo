@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class Information implements Serializable {
     public static Information information;
-    public static HashMap<String, ArrayList<Pair>> data;
+    public HashMap<String, ArrayList<Pair>> data;
 
     public static final int VERY_LIKELY = 5;
     public static final int LIKELY = 4;

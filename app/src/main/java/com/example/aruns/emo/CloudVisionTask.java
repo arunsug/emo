@@ -62,10 +62,14 @@ public class CloudVisionTask extends AsyncTask<Void, Void, Void> {
             int[] likelihoods = {anger, joy, sorrow, surprise};
             Emotion answer = Information.getIntAnswer(likelihoods);
 
+            if(Information.information == null) {
+                Information.information = new Information();
+                Information.information.createInfoFromMemory(context);
+            }
             if (!Information.information.data.containsKey(appName))
                 Information.information.data.put(appName, new ArrayList<Pair>());
-
             Information.information.data.get(appName).add(new Pair(time, answer));
+            Information.information.writeInfoToMemory(context);
 
             Log.v("CloudVisionTask", "Hashmap: " + Arrays.toString(Information.information.data.entrySet().toArray()));
         }catch (Exception e){
